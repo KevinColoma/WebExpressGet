@@ -1,6 +1,7 @@
 // ejemplo
 // GET: https://api-bazar-express.onrender.com/productos
 // POST: https://api-bazar-express.onrender.com/productos
+// get       https://api-bazar-express.onrender.com/clients/top
 
 const express = require('express');
 const mongoose = require('mongoose');

@@ -9,6 +9,18 @@ router.get('/clients', async (req, res) => {
   catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+// Clientes top (más compras) - debe ir antes del route :id
+router.get('/clients/top', async (req, res) => {
+  try {
+    const agg = await Sales.aggregate([
+      { $group: { _id: "$clientId", total: { $sum: "$total" }, ventas: { $sum: 1 } } },
+      { $sort: { total: -1 } },
+      { $limit: 10 }
+    ]);
+    res.json(agg);
+  } catch (err) { res.status(400).json({ error: err.message }); }
+});
+
 router.get('/clients/:id', async (req, res) => {
   try {
     const client = await Client.findById(req.params.id);
@@ -45,18 +57,6 @@ router.get('/clients/:id/history', async (req, res) => {
   try {
     const sales = await Sales.find({ clientId: req.params.id });
     res.json(sales);
-  } catch (err) { res.status(400).json({ error: err.message }); }
-});
-
-// Clientes top (más compras)
-router.get('/clients/top', async (req, res) => {
-  try {
-    const agg = await Sales.aggregate([
-      { $group: { _id: "$clientId", total: { $sum: "$total" }, ventas: { $sum: 1 } } },
-      { $sort: { total: -1 } },
-      { $limit: 10 }
-    ]);
-    res.json(agg);
   } catch (err) { res.status(400).json({ error: err.message }); }
 });
 
